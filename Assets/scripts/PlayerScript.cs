@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -9,6 +10,9 @@ public class PlayerScript : MonoBehaviour
   private bool freeze = false;
   private Vector2 movement;
   private Rigidbody2D rigidbodyComponent;
+  private bool minimized = false;
+  private float shrinkTimer = 0f;
+  private float shrinkTime = 25f;
 
   void Update()
   {
@@ -63,6 +67,17 @@ public class PlayerScript : MonoBehaviour
     } else if(freeze) {
       setFreeze(false);
     }
+
+    // update shrink timer
+    if(isMinimized()){
+      if(shrinkTimer > 0)
+      {
+        shrinkTimer -= Time.deltaTime;
+      } else {
+        Grow();
+        shrinkTimer = shrinkTime;
+      }
+    }
   }
 
   void FixedUpdate()
@@ -96,14 +111,22 @@ public class PlayerScript : MonoBehaviour
         }
       }
     }
+  }
 
+  void OnTriggerStay2D(Collider2D collider)
+  {
     // collision with powerup
-    PowerUpScript powerUp = collision.gameObject.GetComponent<PowerUpScript>();
+    PowerUpScript powerUp = collider.gameObject.GetComponent<PowerUpScript>();
     if(powerUp != null)
     {
-      freezeTimer = freezeTimerTime;
-      setFreeze(true);
-      Destroy(powerUp.gameObject);
+      if(powerUp.gameObject.name == "TimeStop(Clone)"){
+        freezeTimer = freezeTimerTime;
+        setFreeze(true);
+        Destroy(powerUp.gameObject);
+      } else if(powerUp.gameObject.name == "ShrinkItem(Clone)") {
+        Shrink();
+        Destroy(powerUp.gameObject);
+      }
     }
   }
 
@@ -138,5 +161,34 @@ public class PlayerScript : MonoBehaviour
     {
       generateScript.setFreeze(isFreezed);
     }
+  }
+
+  bool isMinimized()
+  {
+    if(this.transform.localScale.x == 0.2f || this.transform.localScale.y == 0.2f)
+    {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  void Shrink()
+  {
+    if(!isMinimized())
+    {
+      shrinkTimer = shrinkTime;
+    }
+
+    float x_coord = this.transform.localScale.x / 2;
+    float y_coord = this.transform.localScale.y / 2;
+    this.transform.localScale = new Vector3(x_coord, y_coord, 1);
+  }
+
+  void Grow()
+  {
+    float x_coord = this.transform.localScale.x * 2;
+    float y_coord = this.transform.localScale.y * 2;
+    this.transform.localScale = new Vector3(x_coord, y_coord, 1);
   }
 }

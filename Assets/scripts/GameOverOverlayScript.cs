@@ -24,10 +24,12 @@ public class GameOverOverlayScript : MonoBehaviour
 
     public void ShowPanel()
     {
-        Text highscoreText = highscoreObject.GetComponent<Text>();
+        Text highscoreText = highscoreObject.gameObject.GetComponent<Text>();
 
         HighscoreScript highscoreScript = FindObjectOfType<HighscoreScript>();
         highscoreText.text = "Highscore: " + Mathf.Round(highscoreScript.getHighscore).ToString();
+
+        highscoreObject.gameObject.SetActive(true);
 
         foreach(Button button in buttons)
         {

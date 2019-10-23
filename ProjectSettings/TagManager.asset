@@ -44,6 +44,9 @@ TagManager:
   - name: Platforms
     uniqueID: 166090621
     locked: 0
+  - name: Items
+    uniqueID: 1772419115
+    locked: 0
   - name: Enemies
     uniqueID: 1607504825
     locked: 0

@@ -1,0 +1,9 @@
+Temp/
+Obj/
+UnityGenerated/
+/Library/
+.vscode/
+*.csproj
+*.sln
+obj/
+Shmup01431389

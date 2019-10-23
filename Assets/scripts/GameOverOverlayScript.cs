@@ -4,14 +4,18 @@ using UnityEngine.UI;
 public class GameOverOverlayScript : MonoBehaviour
 {
     private Button[] buttons;
+    private Transform highscoreObject;
     void Awake()
     {
         buttons = gameObject.GetComponentsInChildren<Button>();
+        highscoreObject = this.transform.Find("Highscore");
         HidePanel();
     }
 
     public void HidePanel()
     {
+        highscoreObject.gameObject.SetActive(false);
+
         foreach(Button button in buttons)
         {
             button.gameObject.SetActive(false);
@@ -20,8 +24,7 @@ public class GameOverOverlayScript : MonoBehaviour
 
     public void ShowPanel()
     {
-        Transform highscoreText1 = this.transform.Find("Highscore");
-        Text highscoreText = highscoreText1.GetComponent<Text>();
+        Text highscoreText = highscoreObject.GetComponent<Text>();
 
         HighscoreScript highscoreScript = FindObjectOfType<HighscoreScript>();
         highscoreText.text = "Highscore: " + Mathf.Round(highscoreScript.getHighscore).ToString();

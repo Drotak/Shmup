@@ -1,5 +1,5 @@
 using UnityEngine;
-using System.Collections;
+using UnityEngine.UI;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -10,9 +10,32 @@ public class PlayerScript : MonoBehaviour
   private bool freeze = false;
   private Vector2 movement;
   private Rigidbody2D rigidbodyComponent;
-  private bool minimized = false;
   private float shrinkTimer = 0f;
   private float shrinkTime = 25f;
+  private bool wantToCollect = false;
+  private bool haveTimeStop = false;
+
+  private GameObject timeStop;
+  private Image timeStopImage;
+  private GameObject shrinkItem;
+  private Image shrinkItemImage;
+
+  private GameOverScript gameOver;
+
+  void Awake()
+  {
+    gameOver = FindObjectOfType<GameOverScript>();
+    timeStop = GameObject.Find("TimeStop");
+    timeStopImage = timeStop.gameObject.GetComponent<Image>();
+    shrinkItem = GameObject.Find("ShrinkItem");
+    shrinkItemImage = shrinkItem.gameObject.GetComponent<Image>();
+  }
+
+  void Start()
+  {
+    timeStop.SetActive(false);
+    shrinkItem.SetActive(false);
+  }
 
   void Update()
   {
@@ -64,7 +87,9 @@ public class PlayerScript : MonoBehaviour
     if(freezeTimer > 0)
     {
       freezeTimer -= Time.deltaTime;
+      timeStopImage.fillAmount = freezeTimer/freezeTimerTime;
     } else if(freeze) {
+      hideTimeStop();
       setFreeze(false);
     }
 
@@ -73,11 +98,62 @@ public class PlayerScript : MonoBehaviour
       if(shrinkTimer > 0)
       {
         shrinkTimer -= Time.deltaTime;
+        shrinkItemImage.fillAmount = shrinkTimer/shrinkTime;
       } else {
         Grow();
         shrinkTimer = shrinkTime;
       }
+    } else {
+      hideShrinkItem();
     }
+
+    if(Input.GetKeyDown("e"))
+    {
+      wantToCollect = true;
+    }
+
+    if(Input.GetKeyUp("e"))
+    {
+      wantToCollect = false;
+    }
+
+    if(wantToCollect && haveTimeStop)
+    {
+      freezeTimer = freezeTimerTime;
+      setFreeze(true);
+
+      haveTimeStop = false;
+
+      wantToCollect = false;
+    }
+  }
+
+  void showTimeStop()
+  {
+    timeStop.SetActive(true);
+  }
+
+  void hideTimeStop()
+  {
+    timeStop.SetActive(false);
+
+    if(haveTimeStop)
+    {
+      timeStop.SetActive(true);
+    }
+
+    timeStopImage.fillAmount = 1f;
+  }
+
+  void showShrinkItem()
+  {
+    shrinkItem.SetActive(true);
+  }
+
+  void hideShrinkItem()
+  {
+    shrinkItem.SetActive(false);
+    shrinkItemImage.fillAmount = 1f;
   }
 
   void FixedUpdate()
@@ -105,6 +181,7 @@ public class PlayerScript : MonoBehaviour
       {
         HealthScript playerHealth = this.GetComponent<HealthScript>();
 
+
         if(playerHealth != null)
         {
           playerHealth.Damage(1);
@@ -119,20 +196,24 @@ public class PlayerScript : MonoBehaviour
     PowerUpScript powerUp = collider.gameObject.GetComponent<PowerUpScript>();
     if(powerUp != null)
     {
-      if(powerUp.gameObject.name == "TimeStop(Clone)"){
-        freezeTimer = freezeTimerTime;
-        setFreeze(true);
-        Destroy(powerUp.gameObject);
-      } else if(powerUp.gameObject.name == "ShrinkItem(Clone)") {
-        Shrink();
-        Destroy(powerUp.gameObject);
+      if(!haveTimeStop && wantToCollect)
+      {
+        if(powerUp.gameObject.name == "TimeStop(Clone)"){
+          haveTimeStop = true;
+          showTimeStop();
+          Destroy(powerUp.gameObject);
+        } else if(powerUp.gameObject.name == "ShrinkItem(Clone)") {
+          Shrink();
+          Destroy(powerUp.gameObject);
+        }
+
+        wantToCollect = false;
       }
     }
   }
 
   void OnDestroy()
   {
-      var gameOver = FindObjectOfType<GameOverScript>();
       gameOver.EndGame();
   }
 
@@ -179,6 +260,8 @@ public class PlayerScript : MonoBehaviour
     {
       shrinkTimer = shrinkTime;
     }
+
+    showShrinkItem();
 
     float x_coord = this.transform.localScale.x / 2;
     float y_coord = this.transform.localScale.y / 2;

@@ -5,6 +5,6 @@ public class MenuScript : MonoBehaviour
 {
     public void StartGame()
     {
-        SceneManager.LoadScene("Stage1");
+        SceneManager.LoadScene("Keybindings");
     }
 }

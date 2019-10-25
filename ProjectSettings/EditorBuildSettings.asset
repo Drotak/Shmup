@@ -9,6 +9,9 @@ EditorBuildSettings:
     path: Assets/scenes/Menu.unity
     guid: 5602c1c0ccf132d958186e4900dfff0b
   - enabled: 1
+    path: Assets/scenes/Keybindings.unity
+    guid: 218f5e651e480631698d57e9dd9a22af
+  - enabled: 1
     path: Assets/scenes/Stage1.unity
     guid: aabc7d8d4e33b33ca98429a04820979c
   m_configObjects: {}

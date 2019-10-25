@@ -2,8 +2,26 @@ using UnityEngine;
 
 public class PlatformScript : MonoBehaviour
 {
-    void Start()
+  private SpriteRenderer rendererComponent;
+  private bool hasSpawn;
+
+  void Awake()
+  {
+    rendererComponent = GetComponent<SpriteRenderer>();
+  }
+
+  void Start()
+  {
+      hasSpawn = false;
+  }
+
+  void Update()
+  {
+    if( rendererComponent.IsVisibleFrom(Camera.main) == true )
     {
-        Destroy(gameObject, 20f);
+      hasSpawn = true;
+    } else if(hasSpawn) {
+      Destroy(gameObject);
     }
+  }
 }

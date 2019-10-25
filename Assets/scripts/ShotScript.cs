@@ -6,8 +6,18 @@ public class ShotScript : MonoBehaviour
 
   public bool isEnemyShot = false;
 
-  void Start()
+  private SpriteRenderer rendererComponent;
+
+  void Awake()
   {
-    Destroy(gameObject, 10);
+    rendererComponent = GetComponent<SpriteRenderer>();
+  }
+
+  void Update()
+  {
+    if( rendererComponent.IsVisibleFrom(Camera.main) == false )
+    {
+      Destroy(gameObject);
+    }
   }
 }

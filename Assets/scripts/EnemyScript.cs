@@ -8,6 +8,7 @@ public class EnemyScript : MonoBehaviour
   private Collider2D coliderComponent;
   private SpriteRenderer rendererComponent;
   private WeaponScript[] weapons;
+  private HighscoreScript highscoreScript;
 
 
   void Awake()
@@ -17,6 +18,7 @@ public class EnemyScript : MonoBehaviour
     moveScript = GetComponent<MoveScript>();
     coliderComponent = GetComponent<Collider2D>();
     rendererComponent = GetComponent<SpriteRenderer>();
+    highscoreScript = FindObjectOfType<HighscoreScript>();
   }
 
   void Start()
@@ -54,6 +56,8 @@ public class EnemyScript : MonoBehaviour
 
       if( rendererComponent.IsVisibleFrom(Camera.main) == false )
       {
+        // Player doesn't shoot the enemy - punish him for that
+        highscoreScript.addToHighscore(-2f);
         Destroy(gameObject);
       }
     }

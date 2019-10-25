@@ -59,12 +59,16 @@ public class GenerateScript : MonoBehaviour
 
         platform.transform.localScale = new Vector3(scale, scale, 1);
 
+        Camera cam = Camera.main;
+        float height = 2f * cam.orthographicSize;
+        float width = height * cam.aspect;
+
         if( isInit )
         {
-            Vector3 offset = new Vector3(Random.Range(-9f, 9f), Random.Range(-4.5f, 4.5f), layer);
+            Vector3 offset = new Vector3(Random.Range(-width/2, width/2), Random.Range((-height/2)+1f, (height/2)-1f), layer);
             platform.position = transform.position + offset;
         } else {
-            Vector3 offset = new Vector3(Random.Range(10f, 20f), Random.Range(-4.5f, 4.5f), 0);
+            Vector3 offset = new Vector3(Random.Range(width/1.5f, width*1.5f), Random.Range((-height/2)+1f, (height/2)-1f), 0);
             platform.position = new Vector3(
                 Camera.main.transform.position.x + offset.x,
                 Camera.main.transform.position.y + offset.y,

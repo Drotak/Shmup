@@ -38,6 +38,11 @@ public class HighscoreScript : MonoBehaviour
         }
     }
 
+    public void addToHighscore(float number)
+    {
+        highscore += number;
+    }
+
     public void stopHighscore()
     {
         stopped = true;
